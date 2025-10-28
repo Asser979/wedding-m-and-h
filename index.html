@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wedding Invitation — Elegant Envelope</title>
+  <style>
+    :root {
+      --bg: url('Gemini_Generated_Image_8mxdh98mxdh98mxd.png'); /* Set uploaded background */
+      --accent: #d4af37;
+      --text: #fff;
+      --card-bg: #fff;
+      --envelope-color: #f8f0e3;
+      --envelope-border: #c9b28a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Playfair Display', serif; }
+
+    body {
+      /* Layered approach: we'll use pseudo-elements for blur and focal image */
+      position: relative;
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center; flex-direction: column;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* blurred full-screen background */
+    body::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--bg) center/cover no-repeat;
+      filter: blur(8px) brightness(0.6);
+      transform: scale(1.03);
+      z-index: 0;
+    }
+
+    /* centered clear focal image (smaller) placed above the blur */
+    body::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -55%);
+      width: 40vw;
+      height: auto;
+      max-width: 700px;
+      max-height: 70vh;
+      background: var(--bg) center/contain no-repeat;
+      z-index: 1;
+      pointer-events: none; /* allow clicks to pass through */
+      opacity: 0; /* hidden by default */
+      transition: opacity 300ms ease, transform 400ms ease;
+    }
+
+    /* ensure page content (envelope) sits above backgrounds */
+    .envelope-scene, .hint { z-index: 2; position: relative; }
+
+    .envelope-scene {
+      position: relative;
+      width: 420px;
+      height: 280px;
+      cursor: pointer;
+    }
+
+    .envelope {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: var(--envelope-color);
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+      overflow: hidden;
+      border: 2px solid var(--envelope-border);
+      transition: transform 0.8s ease;
+    }
+
+    .envelope.open {
+      transform: rotateX(12deg) translateY(-10px);
+    }
+
+    .invitation {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.95);
+      width: 85%;
+      height: 70%;
+      background: var(--card-bg);
+      border-radius: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      opacity: 0;
+      transition: all 1.2s ease;
+    }
+
+    .envelope.open .invitation {
+      opacity: 1;
+      transform: translate(-50%, -80%) scale(1);
+    }
+
+    .invitation .title {
+      font-weight: bold;
+      font-size: 18px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .invitation .names {
+      font-family: 'Great Vibes', cursive;
+      font-size: 30px;
+      color: #111;
+      margin-bottom: 10px;
+    }
+
+    .invitation .date {
+      font-size: 14px;
+      color: #555;
+    }
+
+    .hint {
+      margin-top: 25px;
+      color: #fff;
+      font-size: 16px;
+      opacity: 0.85;
+    }
+
+    @media (max-width: 500px) {
+      .envelope-scene {
+        width: 90%;
+        height: 220px;
+      }
+      body::after {
+        width: 60vw;
+      }
+    }
+    /* toggle button for clearing blur */
+    .clear-toggle {
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      background: rgba(255,255,255,0.9);
+      color: #111;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 999px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body.no-blur::before {
+      filter: blur(0) brightness(1);
+      transform: scale(1);
+    }
+
+    body.no-blur::after {
+      opacity: 1;
+      filter: none;
+      z-index: 4; /* above envelope */
+      transform: translate(-50%, -50%); /* nudge slightly to center perfectly */
+    }
+  </style>
+</head>
+<body>
+  <div class="envelope-scene" id="scene">
+    <div class="envelope" id="envelope">
+      <div class="invitation" id="invitation">
+        <div class="title">You're Invited To The Wedding Of</div>
+        <div class="names">mana & hossam</div>
+        <div class="date">Saturday, June 1, 2026 — 6:00 PM</div>
+      </div>
+    </div>
+  </div>
+  <div class="hint">Click the envelope to open your invitation ✉️</div>
+
+  <button class="clear-toggle" id="clearToggle" aria-pressed="false">Show Image</button>
+
+  <script>
+    const scene = document.getElementById('scene');
+    const envelope = document.getElementById('envelope');
+
+    const clearToggle = document.getElementById('clearToggle');
+
+    scene.addEventListener('click', () => {
+      envelope.classList.toggle('open');
+    });
+
+    clearToggle.addEventListener('click', () => {
+      document.body.classList.toggle('no-blur');
+      const pressed = document.body.classList.contains('no-blur');
+      clearToggle.setAttribute('aria-pressed', String(pressed));
+      clearToggle.textContent = pressed ? 'Hide Image (Blur)' : 'Show Image';
+    });
+  </script>
+</body>
+</html>
